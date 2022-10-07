@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react';
 
 import illustrationImg from '@assets/images/illustration-login.png';
+import { FormField } from '@components/FormField';
 
 function InvalidLink({ className, children }: { className?: string; children: ReactNode }) {
   return (
@@ -38,71 +39,35 @@ export function Login() {
           >
             Enter your credentials to acess your account.
           </p>
-          <fieldset className="mb-6">
-            <label
-              htmlFor="email"
-              className="font-medium text-base text-blue-900"
-            >
-              Email
-              <div className="mt-0.5 relative">
-                <i
-                  className="
-                    fa-solid fa-envelope text-blue-500 text-opacity-80
-                    absolute top-1/2 left-3 -translate-y-1/2
-                  "
-                />
-                <input
-                  id="email"
-                  className="
-                    w-full font-normal text-black border-2 rounded-lg py-2 px-2 text-sm
-                    placeholder:text-black placeholder:text-opacity-50 pl-8
-                    focus:outline-none focus:border-blue-600 transition-colors
-                  "
-                  type="text"
-                  placeholder="Enter your email"
-                />
-              </div>
-            </label>
-          </fieldset>
 
-          <fieldset className="mb-5">
-            <label
-              htmlFor="password"
-              className="font-medium text-base text-blue-900"
-            >
-              Password
-              <div className="mt-0.5 relative">
-                <i
-                  className="
-                    fa-solid fa-lock text-blue-500 text-opacity-80
-                    absolute top-1/2 left-3 -translate-y-1/2
-                  "
-                />
-                <input
-                  id="password"
-                  className="
-                    w-full font-normal text-black border-2 rounded-lg py-2 px-2 text-sm
-                    placeholder:text-black placeholder:text-opacity-50 pl-8
-                    focus:outline-none focus:border-blue-600 transition-colors
-                  "
-                  type="password"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  className="
-                    absolute top-1/2 right-3 -translate-y-1/2 text-blue-600 hover:text-blue-700
-                  "
-                >
-                  {showPassword ? (
-                    <i className="fa-solid fa-eye-slash" />
-                  ) : (
-                    <i className="fa-solid fa-eye" />
-                  )}
-                </button>
-              </div>
-            </label>
-          </fieldset>
+          <FormField
+            label="Email"
+            placeholder="Enter your email"
+            icon={(
+              <i className="fa-solid fa-envelope text-blue-500 text-opacity-80" />
+            )}
+          />
+
+          <FormField
+            inputType="password"
+            label="Password"
+            placeholder="Enter your password"
+            icon={(
+              <i className="fa-solid fa-lock text-blue-500 text-opacity-80" />
+            )}
+            rightIcon={(
+              <button
+                type="button"
+                className="text-blue-600 hover:text-blue-700"
+              >
+                {showPassword ? (
+                  <i className="fa-solid fa-eye-slash" />
+                ) : (
+                  <i className="fa-solid fa-eye" />
+                )}
+              </button>
+            )}
+          />
 
           <div className="mb-5 font-medium text-xs sm:text-sm flex justify-between">
             <label
