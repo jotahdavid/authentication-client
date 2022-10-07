@@ -1,7 +1,11 @@
-import { Login } from '@pages/Login';
+import { BrowserRouter } from 'react-router-dom';
+
+import AppRoutes from '../../Routes';
 
 export function App() {
   return (
-    <Login />
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
