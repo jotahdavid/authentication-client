@@ -1,27 +1,11 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { FormField } from '@components/FormField';
 
-import illustrationImg from '@assets/images/illustration-login.png';
+import illustrationImg from '@assets/images/illustration-register.png';
 
-function InvalidLink({ className, children }: { className?: string; children: ReactNode }) {
-  return (
-    <a
-      href="/"
-      className={className}
-      onClick={(e) => e.preventDefault()}
-    >
-      {children}
-    </a>
-  );
-}
-
-InvalidLink.defaultProps = {
-  className: '',
-};
-
-export function Login() {
+export function Register() {
   const [showPassword] = useState(false);
 
   return (
@@ -32,15 +16,18 @@ export function Login() {
           onSubmit={(e) => e.preventDefault()}
         >
           <h2
-            className="font-semibold text-3xl text-blue-900 text-center mb-2"
+            className="font-semibold text-3xl text-blue-900 text-center mb-11"
           >
-            Welcome back!
+            Create new account
           </h2>
-          <p
-            className="font-medium text-base text-black text-opacity-50 text-center mb-8"
-          >
-            Enter your credentials to acess your account.
-          </p>
+
+          <FormField
+            label="Name"
+            placeholder="Enter your name"
+            icon={(
+              <i className="fa-solid fa-envelope text-blue-500 text-opacity-80" />
+            )}
+          />
 
           <FormField
             label="Email"
@@ -71,47 +58,47 @@ export function Login() {
             )}
           />
 
-          <div className="mb-5 font-medium text-xs sm:text-sm flex justify-between">
-            <label
-              htmlFor="remember"
-              className="flex items-center gap-2 text-black text-opacity-80"
-            >
-              <input
-                type="checkbox"
-                name="remember"
-                id="remember"
-                className="checkbox"
-              />
-              Remember me
-            </label>
-
-            <InvalidLink
-              className="text-blue-600 hover:text-blue-800"
-            >
-              Forgot password?
-            </InvalidLink>
-          </div>
+          <FormField
+            inputType="password"
+            label="Re-type password"
+            placeholder="Re-type your password"
+            icon={(
+              <i className="fa-solid fa-lock text-blue-500 text-opacity-80" />
+            )}
+            rightIcon={(
+              <button
+                type="button"
+                className="text-blue-600 hover:text-blue-700"
+              >
+                {showPassword ? (
+                  <i className="fa-solid fa-eye-slash" />
+                ) : (
+                  <i className="fa-solid fa-eye" />
+                )}
+              </button>
+            )}
+          />
 
           <button
             type="submit"
             className="
-              w-full font-semibold text-lg py-3 bg-blue-600 hover:bg-blue-700 transition-colors
+              w-full font-semibold text-lg py-3 mt-2 bg-blue-600 hover:bg-blue-700 transition-colors
               text-white rounded-lg shadow-md
             "
           >
-            Sign In
+            Sign Up
           </button>
         </form>
 
         <p
           className="text-sm text-black text-opacity-80"
         >
-          Don&apos;t have an account?&nbsp;
+          Already have an account?&nbsp;
           <Link
-            to="/register"
+            to="/login"
             className="font-medium text-blue-600 hover:text-blue-800"
           >
-            Sign up for free&nbsp;
+            Login In&nbsp;
             <i className="fa-solid fa-arrow-up-right-from-square" />
           </Link>
         </p>
@@ -122,7 +109,7 @@ export function Login() {
         <img
           src={illustrationImg}
           alt="Illustration"
-          className="block max-w-lg w-11/12"
+          className="block max-w-sm w-11/12"
         />
       </section>
     </section>

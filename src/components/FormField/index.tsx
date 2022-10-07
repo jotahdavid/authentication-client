@@ -20,7 +20,7 @@ export function FormField({
         className="font-medium text-base text-blue-900"
       >
         {label}
-        <div className="mt-0.5 relative">
+        <div className="mt-1 relative">
           {Icon && (
             <div className="absolute top-1/2 left-3 -translate-y-1/2">
               {Icon}
