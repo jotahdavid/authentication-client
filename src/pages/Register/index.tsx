@@ -3,27 +3,20 @@ import { Link } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import type { MessageParams } from 'yup/lib/types';
 
-import capitalize from '@utils/capitalize';
 import { FormField } from '@components/FormField';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 
 import illustrationImg from '@assets/images/illustration-register.png';
 
-const handleRequireError = (params: MessageParams) => {
-  const fieldName = params.label ?? capitalize(params.path);
-  return `${fieldName} is required`;
-};
-
 const registerSchema = yup.object({
-  name: yup.string().required(handleRequireError).label('Name'),
-  email: yup.string().email('Email format is invalid').required(handleRequireError).label('Email'),
-  password: yup.string().required(handleRequireError).label('Password'),
+  name: yup.string().required().label('Name'),
+  email: yup.string().email('Email format is invalid').required().label('Email'),
+  password: yup.string().required().label('Password'),
   reTypePassword: yup.string().equals<string>(
     [yup.ref<string>('password')],
     'Re-type password must be the equals password',
-  ).required(handleRequireError).label('Re-type password'),
+  ).required().label('Re-type password'),
 }).required();
 
 type RegisterSchema = yup.InferType<typeof registerSchema>;

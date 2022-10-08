@@ -6,13 +6,13 @@ import * as yup from 'yup';
 
 import { FormField } from '@components/FormField';
 import { InvalidLink } from '@components/InvalidLink';
-
-import illustrationImg from '@assets/images/illustration-login.png';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 
+import illustrationImg from '@assets/images/illustration-login.png';
+
 const loginSchema = yup.object({
-  email: yup.string().email().required(),
-  password: yup.string().required(),
+  email: yup.string().email('Email format is invalid').required().label('Email'),
+  password: yup.string().required().label('Password'),
 }).required();
 
 type LoginSchema = yup.InferType<typeof loginSchema>;
