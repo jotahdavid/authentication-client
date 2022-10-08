@@ -1,35 +1,42 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import { FormField } from '@components/FormField';
+import { InvalidLink } from '@components/InvalidLink';
 
 import illustrationImg from '@assets/images/illustration-login.png';
+import { PasswordVisibility } from '@components/PasswordVisibility';
 
-function InvalidLink({ className, children }: { className?: string; children: ReactNode }) {
-  return (
-    <a
-      href="/"
-      className={className}
-      onClick={(e) => e.preventDefault()}
-    >
-      {children}
-    </a>
-  );
-}
+const loginSchema = yup.object({
+  email: yup.string().email().required(),
+  password: yup.string().required(),
+}).required();
 
-InvalidLink.defaultProps = {
-  className: '',
-};
+type LoginSchema = yup.InferType<typeof loginSchema>;
 
 export function Login() {
+  const {
+    register, handleSubmit, formState: { errors },
+  } = useForm<LoginSchema>({
+    mode: 'onBlur',
+    resolver: yupResolver(loginSchema),
+  });
+
   const [showPassword] = useState(false);
+
+  const onSubmit: SubmitHandler<LoginSchema> = (data) => {
+    console.log(data);
+  };
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
       <main className="flex flex-col items-center justify-center bg-blue-100 font-poppins">
         <form
           className="bg-white p-5 py-8 sm:p-10 mb-4 mx-auto rounded-xl max-w-md w-11/12"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <h2
             className="font-semibold text-3xl text-blue-900 text-center mb-2"
@@ -43,31 +50,26 @@ export function Login() {
           </p>
 
           <FormField
+            {...register('email')}
             label="Email"
             placeholder="Enter your email"
-            icon={(
+            error={errors?.email?.message}
+            leftIcon={(
               <i className="fa-solid fa-envelope text-blue-500 text-opacity-80" />
             )}
           />
 
           <FormField
-            inputType="password"
+            {...register('password')}
             label="Password"
             placeholder="Enter your password"
-            icon={(
+            inputType="password"
+            error={errors?.password?.message}
+            leftIcon={(
               <i className="fa-solid fa-lock text-blue-500 text-opacity-80" />
             )}
             rightIcon={(
-              <button
-                type="button"
-                className="text-blue-600 hover:text-blue-700"
-              >
-                {showPassword ? (
-                  <i className="fa-solid fa-eye-slash" />
-                ) : (
-                  <i className="fa-solid fa-eye" />
-                )}
-              </button>
+              <PasswordVisibility show={showPassword} />
             )}
           />
 
@@ -96,8 +98,9 @@ export function Login() {
             type="submit"
             className="
               w-full font-semibold text-lg py-3 bg-blue-600 hover:bg-blue-700 transition-colors
-              text-white rounded-lg shadow-md
+              text-white rounded-lg shadow-md disabled:bg-gray-500
             "
+            disabled={Object.keys(errors).length > 0}
           >
             Sign In
           </button>
