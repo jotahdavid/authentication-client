@@ -53,7 +53,7 @@ export function Login() {
             {...register('email')}
             label="Email"
             placeholder="Enter your email"
-            error={errors?.email?.message}
+            error={errors.email?.message}
             leftIcon={(
               <i className="fa-solid fa-envelope text-blue-500 text-opacity-80" />
             )}
@@ -64,7 +64,7 @@ export function Login() {
             label="Password"
             placeholder="Enter your password"
             inputType="password"
-            error={errors?.password?.message}
+            error={errors.password?.message}
             leftIcon={(
               <i className="fa-solid fa-lock text-blue-500 text-opacity-80" />
             )}
