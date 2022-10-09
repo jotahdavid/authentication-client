@@ -15,14 +15,14 @@ const registerSchema = yup.object({
   password: yup.string().required().label('Password'),
   reTypePassword: yup.string().equals<string>(
     [yup.ref<string>('password')],
-    'Re-type password must be the equals password',
+    'Re-type password must be equals password',
   ).required().label('Re-type password'),
 }).required();
 
 type RegisterSchema = yup.InferType<typeof registerSchema>;
 
-const isString = (value: any): value is string => (
-  typeof value === 'string'
+const safeString = (value: any) => (
+  typeof value === 'string' ? value : ''
 );
 
 export function Register() {
@@ -33,11 +33,15 @@ export function Register() {
     resolver: yupResolver(registerSchema),
   });
 
-  const [showPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<RegisterSchema> = (data) => {
     console.log(data);
   };
+
+  function handlePasswordVisibility() {
+    setShowPassword((prevState) => !prevState);
+  }
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
@@ -57,9 +61,7 @@ export function Register() {
             label="Name"
             placeholder="Enter your name"
             error={errors.name?.message}
-            leftIcon={(
-              <i className="fa-solid fa-envelope text-blue-500 text-opacity-80" />
-            )}
+            leftIcon={<i className="fa-solid fa-envelope" />}
           />
 
           <FormField
@@ -67,36 +69,38 @@ export function Register() {
             label="Email"
             placeholder="Enter your email"
             error={errors.email?.message}
-            leftIcon={(
-              <i className="fa-solid fa-envelope text-blue-500 text-opacity-80" />
-            )}
+            leftIcon={<i className="fa-solid fa-envelope" />}
           />
 
           <FormField
             {...register('password', { deps: ['reTypePassword'] })}
-            inputType="password"
+            inputType={showPassword ? 'text' : 'password'}
             label="Password"
             placeholder="Enter your password"
             error={errors.password?.message}
-            leftIcon={(
-              <i className="fa-solid fa-lock text-blue-500 text-opacity-80" />
-            )}
+            leftIcon={<i className="fa-solid fa-lock" />}
             rightIcon={(
-              <PasswordVisibility show={showPassword} />
+              <PasswordVisibility
+                variant={errors.password && 'error'}
+                show={showPassword}
+                onClick={handlePasswordVisibility}
+              />
             )}
           />
 
           <FormField
             {...register('reTypePassword')}
-            inputType="password"
+            inputType={showPassword ? 'text' : 'password'}
             label="Re-type password"
             placeholder="Re-type your password"
-            error={isString(errors.reTypePassword?.message) ? errors.reTypePassword?.message : ''}
-            leftIcon={(
-              <i className="fa-solid fa-lock text-blue-500 text-opacity-80" />
-            )}
+            error={safeString(errors.reTypePassword?.message)}
+            leftIcon={<i className="fa-solid fa-lock" />}
             rightIcon={(
-              <PasswordVisibility show={showPassword} />
+              <PasswordVisibility
+                variant={errors.reTypePassword && 'error'}
+                show={showPassword}
+                onClick={handlePasswordVisibility}
+              />
             )}
           />
 

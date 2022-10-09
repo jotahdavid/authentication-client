@@ -23,13 +23,18 @@ export const FormField = forwardRef<null, FormFieldProps>((
     <fieldset className="mb-6">
       <label
         htmlFor={id}
-        className="font-medium text-base text-blue-900"
+        className={`font-medium text-base ${error ? 'text-red-600' : 'text-blue-900'}`}
       >
         {label}
 
         <div className="mt-1 relative">
           {leftIcon && (
-            <div className="absolute top-1/2 left-3 -translate-y-1/2">
+            <div
+              className={`
+                absolute top-1/2 left-3 -translate-y-1/2 text-opacity-80
+                ${error ? 'text-red-500' : 'text-blue-500'}
+              `}
+            >
               {leftIcon}
             </div>
           )}
@@ -37,11 +42,13 @@ export const FormField = forwardRef<null, FormFieldProps>((
           <input
             ref={ref}
             id={id}
-            className="
-              w-full font-normal text-black border-2 rounded-lg py-2 px-2 text-sm
-              placeholder:text-black placeholder:text-opacity-50 pl-8
+            className={`
+              ${leftIcon ? 'pl-8' : 'pl-2'} ${rightIcon ? 'pr-8' : 'pr-2'}
+              w-full font-medium placeholder:font-normal text-black border-2 rounded-lg py-2
+              text-sm placeholder:text-black placeholder:text-opacity-50
               focus:outline-none focus:border-blue-600 transition-colors
-            "
+              ${error && 'border-red-200 focus:border-red-500'}
+            `}
             type={inputType}
             placeholder={placeholder}
             {...inputProps}

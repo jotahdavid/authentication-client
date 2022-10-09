@@ -21,15 +21,19 @@ export function Login() {
   const {
     register, handleSubmit, formState: { errors },
   } = useForm<LoginSchema>({
-    mode: 'onBlur',
+    mode: 'all',
     resolver: yupResolver(loginSchema),
   });
 
-  const [showPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<LoginSchema> = (data) => {
     console.log(data);
   };
+
+  function handlePasswordVisibility() {
+    setShowPassword((prevState) => !prevState);
+  }
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
@@ -54,22 +58,22 @@ export function Login() {
             label="Email"
             placeholder="Enter your email"
             error={errors.email?.message}
-            leftIcon={(
-              <i className="fa-solid fa-envelope text-blue-500 text-opacity-80" />
-            )}
+            leftIcon={<i className="fa-solid fa-envelope" />}
           />
 
           <FormField
             {...register('password')}
             label="Password"
             placeholder="Enter your password"
-            inputType="password"
+            inputType={showPassword ? 'text' : 'password'}
             error={errors.password?.message}
-            leftIcon={(
-              <i className="fa-solid fa-lock text-blue-500 text-opacity-80" />
-            )}
+            leftIcon={<i className="fa-solid fa-lock" />}
             rightIcon={(
-              <PasswordVisibility show={showPassword} />
+              <PasswordVisibility
+                variant={errors.password && 'error'}
+                show={showPassword}
+                onClick={handlePasswordVisibility}
+              />
             )}
           />
 
