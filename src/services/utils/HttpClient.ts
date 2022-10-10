@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 type Default = unknown;
 
@@ -14,11 +14,11 @@ class HttpClient {
   }
 
   post<TResponse = Default, TData = Default>(path: string, data?: TData) {
-    return this.makeRequest.post<TResponse>(path, data);
+    return this.makeRequest.post<TResponse, AxiosResponse<TResponse, TData>, TData>(path, data);
   }
 
   put<TResponse = Default, TData = Default>(path: string, data?: TData) {
-    return this.makeRequest.put<TResponse>(path, data);
+    return this.makeRequest.put<TResponse, AxiosResponse<TResponse, TData>, TData>(path, data);
   }
 
   delete<TResponse = Default>(path: string) {

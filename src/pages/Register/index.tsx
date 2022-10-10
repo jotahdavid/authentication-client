@@ -49,8 +49,6 @@ export function Register() {
     } catch (err) {
       if (err instanceof axios.AxiosError) {
         alert(err.response?.data.error ?? 'Something went wrong!');
-      } else {
-        alert((err as any)?.message);
       }
     }
   };
