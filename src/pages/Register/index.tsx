@@ -61,7 +61,7 @@ export function Register() {
             label="Name"
             placeholder="Enter your name"
             error={errors.name?.message}
-            leftIcon={<i className="fa-solid fa-envelope" />}
+            leftIcon={<i className="fa-solid fa-user" />}
           />
 
           <FormField
