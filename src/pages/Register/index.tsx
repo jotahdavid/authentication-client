@@ -1,8 +1,12 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 import * as yup from 'yup';
+import axios from 'axios';
+
+import UsersService, { User } from '@services/UsersService';
+import safeString from '@utils/safeString';
 
 import { FormField } from '@components/FormField';
 import { PasswordVisibility } from '@components/PasswordVisibility';
@@ -13,7 +17,7 @@ const registerSchema = yup.object({
   name: yup.string().required().label('Name'),
   email: yup.string().email('Email format is invalid').required().label('Email'),
   password: yup.string().required().label('Password'),
-  reTypePassword: yup.string().equals<string>(
+  retypePassword: yup.string().equals<string>(
     [yup.ref<string>('password')],
     'Re-type password must be equals password',
   ).required().label('Re-type password'),
@@ -21,26 +25,48 @@ const registerSchema = yup.object({
 
 type RegisterSchema = yup.InferType<typeof registerSchema>;
 
-const safeString = (value: any) => (
-  typeof value === 'string' ? value : ''
-);
-
 export function Register() {
   const {
-    register, handleSubmit, formState: { errors },
+    register, handleSubmit, trigger, watch, formState: { errors, isValid },
   } = useForm<RegisterSchema>({
     mode: 'all',
     resolver: yupResolver(registerSchema),
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showRetypePassword, setShowRetypePassword] = useState(false);
 
-  const onSubmit: SubmitHandler<RegisterSchema> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
+    const newUser: User = {
+      email: data.email,
+      name: data.name,
+      password: data.password,
+    };
+
+    try {
+      await UsersService.createUser(newUser);
+      alert('Your account was created sucessfully!');
+    } catch (err) {
+      if (err instanceof axios.AxiosError) {
+        alert(err.response?.data.error ?? 'Something went wrong!');
+      } else {
+        alert((err as any)?.message);
+      }
+    }
   };
 
-  function handlePasswordVisibility() {
+  const handlePasswordVisibility = useCallback(() => {
     setShowPassword((prevState) => !prevState);
+  }, []);
+
+  const handleRetypePasswordVisibility = useCallback(() => {
+    setShowRetypePassword((prevState) => !prevState);
+  }, []);
+
+  function handlePasswordChange() {
+    if (watch('retypePassword')) {
+      trigger('retypePassword');
+    }
   }
 
   return (
@@ -73,7 +99,7 @@ export function Register() {
           />
 
           <FormField
-            {...register('password', { deps: ['reTypePassword'] })}
+            {...register('password', { deps: ['reTypePassword'], onChange: handlePasswordChange })}
             inputType={showPassword ? 'text' : 'password'}
             label="Password"
             placeholder="Enter your password"
@@ -89,17 +115,17 @@ export function Register() {
           />
 
           <FormField
-            {...register('reTypePassword')}
-            inputType={showPassword ? 'text' : 'password'}
+            {...register('retypePassword')}
+            inputType={showRetypePassword ? 'text' : 'password'}
             label="Re-type password"
             placeholder="Re-type your password"
-            error={safeString(errors.reTypePassword?.message)}
+            error={safeString(errors.retypePassword?.message)}
             leftIcon={<i className="fa-solid fa-lock" />}
             rightIcon={(
               <PasswordVisibility
-                variant={errors.reTypePassword && 'error'}
-                show={showPassword}
-                onClick={handlePasswordVisibility}
+                variant={errors.retypePassword && 'error'}
+                show={showRetypePassword}
+                onClick={handleRetypePasswordVisibility}
               />
             )}
           />
@@ -110,7 +136,7 @@ export function Register() {
               w-full font-semibold text-lg py-3 mt-2 bg-blue-600 hover:bg-blue-700 transition-colors
               text-white rounded-lg shadow-md disabled:bg-gray-500
             "
-            disabled={Object.keys(errors).length > 0}
+            disabled={!isValid}
           >
             Sign Up
           </button>

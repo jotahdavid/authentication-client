@@ -1,9 +1,11 @@
 import {
-  ReactNode, HTMLInputTypeAttribute, useId, forwardRef,
+  forwardRef, HTMLInputTypeAttribute, ReactNode, useId,
 } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
-interface FormFieldProps extends Omit<UseFormRegisterReturn, 'ref'> {
+type RegisterProps = Partial<Omit<UseFormRegisterReturn, 'ref'>>;
+
+interface FormFieldProps extends RegisterProps {
   label: string;
   placeholder: string;
   inputType?: HTMLInputTypeAttribute;
@@ -14,7 +16,7 @@ interface FormFieldProps extends Omit<UseFormRegisterReturn, 'ref'> {
 
 export const FormField = forwardRef<null, FormFieldProps>((
   {
-    label, placeholder, inputType, leftIcon, rightIcon, error, ...inputProps
+    label, placeholder, inputType, leftIcon, rightIcon, error, ...register
   },
   ref,
 ) => {
@@ -52,7 +54,7 @@ export const FormField = forwardRef<null, FormFieldProps>((
             `}
             type={inputType}
             placeholder={placeholder}
-            {...inputProps}
+            {...register}
           />
 
           {rightIcon && (

@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
 import { FormField } from '@components/FormField';
@@ -31,9 +31,9 @@ export function Login() {
     console.log(data);
   };
 
-  function handlePasswordVisibility() {
+  const handlePasswordVisibility = useCallback(() => {
     setShowPassword((prevState) => !prevState);
-  }
+  }, []);
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
