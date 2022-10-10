@@ -1,8 +1,9 @@
 import {
-  ReactNode, HTMLInputTypeAttribute, InputHTMLAttributes, useId, forwardRef,
+  ReactNode, HTMLInputTypeAttribute, useId, forwardRef,
 } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
-interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+interface FormFieldProps extends Omit<UseFormRegisterReturn, 'ref'> {
   label: string;
   placeholder: string;
   inputType?: HTMLInputTypeAttribute;
