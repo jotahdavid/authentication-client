@@ -8,7 +8,7 @@ import axios from 'axios';
 import UsersService, { User } from '@services/UsersService';
 import safeString from '@utils/safeString';
 
-import { FormField } from '@components/FormField';
+import { Form } from '@components/Form';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 
 import illustrationImg from '@assets/images/illustration-register.png';
@@ -70,17 +70,14 @@ export function Register() {
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
       <main className="flex flex-col items-center justify-center bg-blue-100 font-poppins">
-        <form
-          className="bg-white p-5 py-8 sm:p-10 mb-4 mx-auto rounded-xl max-w-md w-11/12"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <Form.Root onSubmit={handleSubmit(onSubmit)}>
           <h2
             className="font-semibold text-3xl text-blue-900 text-center mb-11"
           >
             Create new account
           </h2>
 
-          <FormField
+          <Form.Field
             {...register('name')}
             label="Name"
             placeholder="Enter your name"
@@ -88,7 +85,7 @@ export function Register() {
             leftIcon={<i className="fa-solid fa-user" />}
           />
 
-          <FormField
+          <Form.Field
             {...register('email')}
             label="Email"
             placeholder="Enter your email"
@@ -96,7 +93,7 @@ export function Register() {
             leftIcon={<i className="fa-solid fa-envelope" />}
           />
 
-          <FormField
+          <Form.Field
             {...register('password', { deps: ['reTypePassword'], onChange: handlePasswordChange })}
             inputType={showPassword ? 'text' : 'password'}
             label="Password"
@@ -112,7 +109,7 @@ export function Register() {
             )}
           />
 
-          <FormField
+          <Form.Field
             {...register('retypePassword')}
             inputType={showRetypePassword ? 'text' : 'password'}
             label="Re-type password"
@@ -138,7 +135,7 @@ export function Register() {
           >
             Sign Up
           </button>
-        </form>
+        </Form.Root>
 
         <p
           className="text-sm text-black text-opacity-80"

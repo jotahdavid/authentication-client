@@ -1,12 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
-import { FormField } from '@components/FormField';
+import { Form } from '@components/Form';
 import { InvalidLink } from '@components/InvalidLink';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 
@@ -22,7 +22,7 @@ type LoginSchema = yup.InferType<typeof loginSchema>;
 
 export function Login() {
   const {
-    register, handleSubmit, formState: { errors },
+    register, handleSubmit, formState: { errors, isValid },
   } = useForm<LoginSchema>({
     mode: 'all',
     resolver: yupResolver(loginSchema),
@@ -33,7 +33,7 @@ export function Login() {
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     try {
       const { token } = await UsersService.login(data);
-      Cookies.set('USER_TOKEN', token);
+      cookies.set('USER_TOKEN', token);
 
       alert('Authenticated!');
     } catch (err) {
@@ -50,10 +50,7 @@ export function Login() {
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
       <main className="flex flex-col items-center justify-center bg-blue-100 font-poppins">
-        <form
-          className="bg-white p-5 py-8 sm:p-10 mb-4 mx-auto rounded-xl max-w-md w-11/12"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <Form.Root onSubmit={handleSubmit(onSubmit)}>
           <h2
             className="font-semibold text-3xl text-blue-900 text-center mb-2"
           >
@@ -65,7 +62,7 @@ export function Login() {
             Enter your credentials to acess your account.
           </p>
 
-          <FormField
+          <Form.Field
             {...register('email')}
             label="Email"
             placeholder="Enter your email"
@@ -73,7 +70,7 @@ export function Login() {
             leftIcon={<i className="fa-solid fa-envelope" />}
           />
 
-          <FormField
+          <Form.Field
             {...register('password')}
             label="Password"
             placeholder="Enter your password"
@@ -116,11 +113,11 @@ export function Login() {
               w-full font-semibold text-lg py-3 bg-blue-600 hover:bg-blue-700 transition-colors
               text-white rounded-lg shadow-md disabled:bg-gray-500
             "
-            disabled={Object.keys(errors).length > 0}
+            disabled={!isValid}
           >
             Sign In
           </button>
-        </form>
+        </Form.Root>
 
         <p
           className="text-sm text-black text-opacity-80"
