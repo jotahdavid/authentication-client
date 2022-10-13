@@ -7,15 +7,15 @@ interface AvatarProps {
 }
 
 const sizes: Record<AvatarSizes, string> = {
-  sm: 'h-16 w-16',
-  md: 'h-20 w-20',
-  lg: 'h-28 w-28',
-  xl: 'h-36 w-36',
+  sm: 'h-16 w-16 shadow-sm',
+  md: 'h-20 w-20 shadow-md',
+  lg: 'h-28 w-28 shadow-lg',
+  xl: 'h-36 w-36 shadow-xl',
 };
 
 export function Avatar({ src, alt, size = 'md' }: AvatarProps) {
   return (
-    <picture className={`block ${sizes[size]}`}>
+    <picture className={`block rounded-full overflow-hidden  ${sizes[size]}`}>
       <img
         src={src}
         alt={alt}

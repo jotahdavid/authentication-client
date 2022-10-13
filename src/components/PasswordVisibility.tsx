@@ -1,10 +1,5 @@
 import { MouseEvent } from 'react';
 
-const passwordVisibilityVariants: Record<PasswordVisibilityVariants, string> = {
-  default: 'text-blue-600 hover:text-blue-700',
-  error: 'text-red-600 hover:text-red-700',
-};
-
 type PasswordVisibilityVariants = 'default' | 'error';
 
 interface PasswordVisibilityProps {
@@ -12,6 +7,11 @@ interface PasswordVisibilityProps {
   variant?: PasswordVisibilityVariants;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
+
+const passwordVisibilityVariants: Record<PasswordVisibilityVariants, string> = {
+  default: 'text-blue-600 hover:text-blue-700',
+  error: 'text-red-600 hover:text-red-700',
+};
 
 export function PasswordVisibility({
   variant = 'default',
