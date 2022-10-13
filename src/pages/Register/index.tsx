@@ -12,6 +12,7 @@ import { Form } from '@components/Form';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 
 import illustrationImg from '@assets/images/illustration-register.png';
+import { usePageTitle } from '@hooks/usePageTitle';
 
 const registerSchema = yup.object({
   name: yup.string().required().label('Name'),
@@ -26,6 +27,8 @@ const registerSchema = yup.object({
 type RegisterSchema = yup.InferType<typeof registerSchema>;
 
 export function Register() {
+  usePageTitle('Auth | Register');
+
   const {
     register, handleSubmit, trigger, watch, formState: { errors, isValid },
   } = useForm<RegisterSchema>({

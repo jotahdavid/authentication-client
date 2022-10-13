@@ -3,15 +3,17 @@ import axios from 'axios';
 import cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+
+import UsersService from '@services/UsersService';
+import { usePageTitle } from '@hooks/usePageTitle';
 
 import { Form } from '@components/Form';
 import { InvalidLink } from '@components/InvalidLink';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 
 import illustrationImg from '@assets/images/illustration-login.png';
-import UsersService from '@services/UsersService';
 
 const loginSchema = yup.object({
   email: yup.string().email('Email format is invalid').required().label('Email'),
@@ -21,6 +23,8 @@ const loginSchema = yup.object({
 type LoginSchema = yup.InferType<typeof loginSchema>;
 
 export function Login() {
+  usePageTitle('Auth | Login');
+
   const {
     register, handleSubmit, formState: { errors, isValid },
   } = useForm<LoginSchema>({
@@ -28,9 +32,13 @@ export function Login() {
     resolver: yupResolver(loginSchema),
   });
 
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
+    return navigate('/profile');
+
     try {
       const { token } = await UsersService.login(data);
       cookies.set('USER_TOKEN', token);

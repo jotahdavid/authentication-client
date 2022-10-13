@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { usePageTitle } from '@hooks/usePageTitle';
+
 import { Avatar } from '@components/Avatar';
 import { Button } from '@components/Button';
 import { Form } from '@components/Form';
@@ -9,6 +11,8 @@ import { FileUploader } from '@components/FileUploader';
 import defaultAvatarIcon from '@assets/images/user-circle.png';
 
 export function ProfileSettings() {
+  usePageTitle('Auth | Profile');
+
   const [imageUrl, setImageUrl] = useState(defaultAvatarIcon);
 
   function handleFileChange(file: File) {
