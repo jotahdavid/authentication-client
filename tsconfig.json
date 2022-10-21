@@ -23,6 +23,7 @@
       "@styles/*": ["assets/styles/*"],
       "@utils/*": ["utils/*"],
       "@hooks/*": ["hooks/*"],
+      "@contexts/*": ["contexts/*"],
       "@services/*": ["services/*"]
     }
   },
