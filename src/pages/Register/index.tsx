@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import axios from 'axios';
 
-import UsersService, { User } from '@services/UsersService';
+import UsersService, { UserCreation } from '@services/UsersService';
 import safeString from '@utils/safeString';
 
 import { Form } from '@components/Form';
@@ -40,7 +40,7 @@ export function Register() {
   const [showRetypePassword, setShowRetypePassword] = useState(false);
 
   const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
-    const newUser: User = {
+    const newUser: UserCreation = {
       email: data.email,
       name: data.name,
       password: data.password,
