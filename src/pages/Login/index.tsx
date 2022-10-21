@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
-import UsersService from '@services/UsersService';
+import UsersService, { UserCredential } from '@services/UsersService';
 import { usePageTitle } from '@hooks/usePageTitle';
 
 import { Form } from '@components/Form';
@@ -37,13 +37,17 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
-    return navigate('/profile');
+    const userCredential: UserCredential = {
+      email: data.email,
+      password: data.password,
+    };
 
     try {
-      const { token } = await UsersService.login(data);
-      cookies.set('USER_TOKEN', token);
+      const { token } = await UsersService.login(userCredential);
 
-      alert('Authenticated!');
+      cookies.set('authentication.token', token);
+
+      navigate('/profile');
     } catch (err) {
       if (err instanceof axios.AxiosError) {
         alert(err.response?.data.error ?? 'Something went wrong!');
