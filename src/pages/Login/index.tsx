@@ -1,13 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
-import UsersService, { UserCredential } from '@services/UsersService';
+import { UserCredential } from '@services/UsersService';
 import { usePageTitle } from '@hooks/usePageTitle';
+import { useAuth } from '@hooks/useAuth';
 
 import { Form } from '@components/Form';
 import { InvalidLink } from '@components/InvalidLink';
@@ -25,6 +25,8 @@ type LoginSchema = yup.InferType<typeof loginSchema>;
 export function Login() {
   usePageTitle('Auth | Login');
 
+  const { handleLogin } = useAuth();
+
   const {
     register, handleSubmit, formState: { errors, isValid },
   } = useForm<LoginSchema>({
@@ -37,15 +39,13 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
-    const userCredential: UserCredential = {
-      email: data.email,
-      password: data.password,
-    };
-
     try {
-      const { token } = await UsersService.login(userCredential);
+      const userCredential: UserCredential = {
+        email: data.email,
+        password: data.password,
+      };
 
-      cookies.set('authentication.token', token);
+      await handleLogin(userCredential);
 
       navigate('/profile');
     } catch (err) {

@@ -4,16 +4,17 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import axios from 'axios';
-import cookies from 'js-cookie';
 
-import UsersService, { UserCreation } from '@services/UsersService';
+import { UserCreation } from '@services/UsersService';
+import { usePageTitle } from '@hooks/usePageTitle';
+import { useAuth } from '@hooks/useAuth';
+
 import safeString from '@utils/safeString';
 
 import { Form } from '@components/Form';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 
 import illustrationImg from '@assets/images/illustration-register.png';
-import { usePageTitle } from '@hooks/usePageTitle';
 
 const registerSchema = yup.object({
   name: yup.string().required().label('Name'),
@@ -30,6 +31,8 @@ type RegisterSchema = yup.InferType<typeof registerSchema>;
 export function Register() {
   usePageTitle('Auth | Register');
 
+  const { handleRegister } = useAuth();
+
   const {
     register, handleSubmit, trigger, watch, formState: { errors, isValid },
   } = useForm<RegisterSchema>({
@@ -43,16 +46,14 @@ export function Register() {
   const [showRetypePassword, setShowRetypePassword] = useState(false);
 
   const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
-    const newUser: UserCreation = {
-      email: data.email,
-      name: data.name,
-      password: data.password,
-    };
-
     try {
-      const { token } = await UsersService.createUser(newUser);
+      const newUser: UserCreation = {
+        email: data.email,
+        name: data.name,
+        password: data.password,
+      };
 
-      cookies.set('authentication.token', token);
+      await handleRegister(newUser);
 
       navigate('/profile');
     } catch (err) {
