@@ -1,9 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import axios from 'axios';
+import cookies from 'js-cookie';
 
 import UsersService, { UserCreation } from '@services/UsersService';
 import safeString from '@utils/safeString';
@@ -36,6 +37,8 @@ export function Register() {
     resolver: yupResolver(registerSchema),
   });
 
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
 
@@ -47,8 +50,11 @@ export function Register() {
     };
 
     try {
-      await UsersService.createUser(newUser);
-      alert('Your account was created sucessfully!');
+      const { token } = await UsersService.createUser(newUser);
+
+      cookies.set('authentication.token', token);
+
+      navigate('/profile');
     } catch (err) {
       if (err instanceof axios.AxiosError) {
         alert(err.response?.data.error ?? 'Something went wrong!');
