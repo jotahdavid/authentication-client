@@ -1,15 +1,18 @@
 import {
   createContext, ReactNode, useCallback, useMemo, useState,
+  useEffect,
 } from 'react';
 import cookies from 'js-cookie';
 
 import UsersService, {
   User, UserCreation, UserCredential,
 } from '@services/UsersService';
+import axios from 'axios';
 
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   handleRegister: (newUser: UserCreation) => Promise<void>;
   handleLogin: (credential: UserCredential) => Promise<void>;
   handleLogout: () => void;
@@ -23,13 +26,36 @@ interface AuthContextProviderProps {
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = Boolean(user);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setIsLoading(true);
+
+        const token = cookies.get('authentication.token');
+        if (isAuthenticated || !token) return;
+
+        const { user: userData } = await UsersService.getByToken(token);
+
+        setUser(userData);
+      } catch (err) {
+        if (err instanceof axios.AxiosError) {
+          console.error(err.message);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [isAuthenticated]);
 
   const handleRegister = useCallback(async (newUser: UserCreation) => {
     const { user: userLogged, token } = await UsersService.createUser(newUser);
 
-    cookies.set('authentication.token', token);
+    const domain = window.location.host;
+    cookies.set('authentication.token', token, { domain });
     setUser(userLogged);
   }, []);
 
@@ -47,11 +73,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   const authContextValue = useMemo(() => ({
     user,
+    isLoading,
     isAuthenticated,
     handleRegister,
     handleLogin,
     handleLogout,
-  }), [user, isAuthenticated, handleRegister, handleLogin, handleLogout]);
+  }), [user, isLoading, isAuthenticated, handleRegister, handleLogin, handleLogout]);
 
   return (
     <AuthContext.Provider value={authContextValue}>

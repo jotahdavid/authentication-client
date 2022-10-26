@@ -22,6 +22,8 @@ export interface UserResponse {
   token: string;
 }
 
+export type UserResponseWithoutToken = Omit<UserResponse, 'token'>;
+
 const { VITE_BASE_API_URL } = import.meta.env;
 
 class UsersService {
@@ -34,6 +36,15 @@ class UsersService {
 
   async login(credential: UserCredential) {
     const response = await this.http.post<UserResponse, UserCredential>('/login', credential);
+    return response.data;
+  }
+
+  async getByToken(token: string) {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await this.http.get<UserResponseWithoutToken>('/users/me', { headers });
     return response.data;
   }
 }
