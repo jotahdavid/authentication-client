@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -31,7 +31,7 @@ type RegisterSchema = yup.InferType<typeof registerSchema>;
 export function Register() {
   usePageTitle('Auth | Register');
 
-  const { handleRegister } = useAuth();
+  const { isAuthenticated, handleRegister } = useAuth();
 
   const {
     register, handleSubmit, trigger, watch, formState: { errors, isValid },
@@ -45,6 +45,12 @@ export function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/profile');
+    }
+  }, [isAuthenticated, navigate]);
+
   const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
     try {
       const newUser: UserCreation = {
@@ -54,8 +60,6 @@ export function Register() {
       };
 
       await handleRegister(newUser);
-
-      navigate('/profile');
     } catch (err) {
       if (err instanceof axios.AxiosError) {
         alert(err.response?.data.error ?? 'Something went wrong!');

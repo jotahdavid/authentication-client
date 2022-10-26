@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -25,7 +25,7 @@ type LoginSchema = yup.InferType<typeof loginSchema>;
 export function Login() {
   usePageTitle('Auth | Login');
 
-  const { handleLogin } = useAuth();
+  const { isAuthenticated, isLoading, handleLogin } = useAuth();
 
   const {
     register, handleSubmit, formState: { errors, isValid },
@@ -37,6 +37,12 @@ export function Login() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/profile');
+    }
+  }, [isAuthenticated, navigate]);
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     try {
@@ -58,6 +64,10 @@ export function Login() {
   const handlePasswordVisibility = useCallback(() => {
     setShowPassword((prevState) => !prevState);
   }, []);
+
+  if (isLoading || isAuthenticated) {
+    return null;
+  }
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">

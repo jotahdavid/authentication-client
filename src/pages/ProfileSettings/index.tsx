@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { usePageTitle } from '@hooks/usePageTitle';
+import { useAuth } from '@hooks/useAuth';
 
 import { Avatar } from '@components/Avatar';
 import { Button } from '@components/Button';
@@ -13,11 +14,27 @@ import defaultAvatarIcon from '@assets/images/user-circle.png';
 export function ProfileSettings() {
   usePageTitle('Auth | Profile');
 
+  const { isLoading, isAuthenticated } = useAuth();
+
+  const navigate = useNavigate();
+
   const [imageUrl, setImageUrl] = useState(defaultAvatarIcon);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 
   function handleFileChange(file: File) {
     const image = URL.createObjectURL(file);
     setImageUrl(image);
+  }
+
+  if (isLoading || !isAuthenticated) {
+    return null;
   }
 
   return (
