@@ -17,6 +17,8 @@ export interface UserCredential extends Pick<User, 'email'> {
   password: string;
 }
 
+export type UserInfo = Omit<User, 'id'>;
+
 export interface UserResponse {
   user: User;
   token: string;
@@ -36,6 +38,15 @@ class UsersService {
 
   async login(credential: UserCredential) {
     const response = await this.http.post<UserResponse, UserCredential>('/login', credential);
+    return response.data;
+  }
+
+  async updateInfo(token: string, newInfo: UserInfo) {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await this.http.put<UserResponseWithoutToken, UserInfo>('/users/me', newInfo, { headers });
     return response.data;
   }
 

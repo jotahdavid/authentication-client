@@ -5,7 +5,7 @@ import {
 import cookies from 'js-cookie';
 
 import UsersService, {
-  User, UserCreation, UserCredential,
+  User, UserCreation, UserCredential, UserInfo,
 } from '@services/UsersService';
 import axios from 'axios';
 
@@ -16,6 +16,7 @@ interface AuthContextValue {
   handleRegister: (newUser: UserCreation) => Promise<void>;
   handleLogin: (credential: UserCredential) => Promise<void>;
   handleLogout: () => void;
+  handleUpdateInfo: (newInfo: UserInfo) => Promise<void>;
 }
 
 export const AuthContext = createContext({} as AuthContextValue);
@@ -71,14 +72,35 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     setUser(null);
   }, []);
 
-  const authContextValue = useMemo(() => ({
-    user,
-    isLoading,
-    isAuthenticated,
-    handleRegister,
-    handleLogin,
-    handleLogout,
-  }), [user, isLoading, isAuthenticated, handleRegister, handleLogin, handleLogout]);
+  const handleUpdateInfo = useCallback(async (newInfo: UserInfo) => {
+    const token = cookies.get('authentication.token');
+    if (!token) return;
+
+    const { user: updatedUser } = await UsersService.updateInfo(token, newInfo);
+
+    setUser(updatedUser);
+  }, []);
+
+  const authContextValue = useMemo(
+    () => ({
+      user,
+      isLoading,
+      isAuthenticated,
+      handleRegister,
+      handleLogin,
+      handleLogout,
+      handleUpdateInfo,
+    }),
+    [
+      user,
+      isLoading,
+      isAuthenticated,
+      handleRegister,
+      handleLogin,
+      handleLogout,
+      handleUpdateInfo,
+    ],
+  );
 
   return (
     <AuthContext.Provider value={authContextValue}>

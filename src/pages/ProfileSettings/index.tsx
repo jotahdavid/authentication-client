@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import axios from 'axios';
 
 import { usePageTitle } from '@hooks/usePageTitle';
 import { useAuth } from '@hooks/useAuth';
+import { UserInfo } from '@services/UsersService';
 
 import { Avatar } from '@components/Avatar';
 import { Button } from '@components/Button';
@@ -11,10 +16,26 @@ import { FileUploader } from '@components/FileUploader';
 
 import defaultAvatarIcon from '@assets/images/user-circle.png';
 
+const editSchema = yup.object({
+  name: yup.string().required().label('Name'),
+  email: yup.string().email('Email format is invalid').required().label('Email'),
+}).required();
+
+type EditSchema = yup.InferType<typeof editSchema>;
+
 export function ProfileSettings() {
   usePageTitle('Auth | Profile');
 
-  const { isLoading, isAuthenticated } = useAuth();
+  const {
+    isLoading, isAuthenticated, user, handleUpdateInfo,
+  } = useAuth();
+
+  const {
+    register, handleSubmit, reset, formState: { errors, isDirty, isValid },
+  } = useForm<EditSchema>({
+    mode: 'all',
+    resolver: yupResolver(editSchema),
+  });
 
   const navigate = useNavigate();
 
@@ -28,18 +49,44 @@ export function ProfileSettings() {
     }
   }, [isLoading, isAuthenticated, navigate]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    reset(user);
+  }, [user, reset]);
+
   function handleFileChange(file: File) {
     const image = URL.createObjectURL(file);
     setImageUrl(image);
   }
 
-  if (isLoading || !isAuthenticated) {
+  const onSubmit: SubmitHandler<EditSchema> = async (data) => {
+    if (!isDirty) return;
+
+    try {
+      const newInfo: UserInfo = {
+        email: data.email,
+        name: data.name,
+      };
+
+      await handleUpdateInfo(newInfo);
+    } catch (err) {
+      if (err instanceof axios.AxiosError) {
+        alert(err.response?.data.error ?? 'Something went wrong!');
+      }
+    }
+  };
+
+  if (isLoading || !isAuthenticated || !user) {
     return null;
   }
 
   return (
     <main className="h-full flex flex-col items-center justify-center bg-blue-100 font-poppins">
-      <Form.Root className="pt-[58px] sm:pt-[78px] relative">
+      <Form.Root
+        onSubmit={handleSubmit(onSubmit)}
+        className="pt-[58px] sm:pt-[78px] relative"
+      >
         <div
           className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full"
         >
@@ -53,15 +100,19 @@ export function ProfileSettings() {
         </div>
 
         <Form.Field
+          {...register('name')}
           label="Name"
           placeholder="Your name"
+          error={errors.name?.message}
           leftIcon={<i className="fa-solid fa-user" />}
         />
 
         <Form.Field
+          {...register('email')}
           label="Email"
           placeholder="Your email"
           inputType="email"
+          error={errors.email?.message}
           leftIcon={<i className="fa-solid fa-envelope" />}
         />
 
@@ -85,7 +136,11 @@ export function ProfileSettings() {
           </div>
         </Form.Field>
 
-        <Button className="mt-2">
+        <Button
+          type="submit"
+          className="mt-2"
+          disabled={!isDirty || !isValid}
+        >
           Update
         </Button>
       </Form.Root>

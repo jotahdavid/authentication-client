@@ -15,11 +15,11 @@ const buttonSizes: Record<ButtonSizes, string> = {
 };
 
 export function Button({
-  className, size = 'md', children, ...props
+  className, size = 'md', children, type, ...props
 }: ButtonProps) {
   return (
     <button
-      type="button"
+      type={type === 'submit' ? 'submit' : 'button'}
       className={`
         w-full font-semibold bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-500
         transition-colors ${buttonSizes[size]}
