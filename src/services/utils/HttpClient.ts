@@ -1,5 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 
+import delay from '@utils/delay';
+
 type Default = unknown;
 
 interface RequestConfig {
@@ -11,6 +13,10 @@ class HttpClient {
 
   constructor(baseURL: string) {
     this.makeRequest = axios.create({ baseURL });
+    this.makeRequest.interceptors.response.use(async (data) => {
+      await delay(500);
+      return data;
+    });
   }
 
   get<TResponse = Default>(path: string, config?: RequestConfig) {
