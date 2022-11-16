@@ -3,11 +3,11 @@ import {
   useEffect,
 } from 'react';
 import cookies from 'js-cookie';
+import axios from 'axios';
 
 import UsersService, {
   User, UserCreation, UserCredential, UserInfo,
 } from '@services/UsersService';
-import axios from 'axios';
 
 interface AuthContextValue {
   user: User | null;
@@ -53,18 +53,29 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }, [isAuthenticated]);
 
   const handleRegister = useCallback(async (newUser: UserCreation) => {
-    const { user: userLogged, token } = await UsersService.createUser(newUser);
+    try {
+      setIsLoading(true);
 
-    const domain = window.location.host;
-    cookies.set('authentication.token', token, { domain });
-    setUser(userLogged);
+      const { user: userLogged, token } = await UsersService.createUser(newUser);
+
+      const domain = window.location.host;
+      cookies.set('authentication.token', token, { domain });
+      setUser(userLogged);
+    } catch {} finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const handleLogin = useCallback(async (userCredential: UserCredential) => {
-    const { user: userLogged, token } = await UsersService.login(userCredential);
+    try {
+      setIsLoading(true);
+      const { user: userLogged, token } = await UsersService.login(userCredential);
 
-    cookies.set('authentication.token', token);
-    setUser(userLogged);
+      cookies.set('authentication.token', token);
+      setUser(userLogged);
+    } catch {} finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -76,9 +87,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     const token = cookies.get('authentication.token');
     if (!token) return;
 
-    const { user: updatedUser } = await UsersService.updateInfo(token, newInfo);
+    try {
+      setIsLoading(true);
 
-    setUser(updatedUser);
+      const { user: updatedUser } = await UsersService.updateInfo(token, newInfo);
+
+      setUser(updatedUser);
+    } catch {} finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const authContextValue = useMemo(
