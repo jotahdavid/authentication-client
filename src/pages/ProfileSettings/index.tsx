@@ -13,6 +13,7 @@ import { Avatar } from '@components/Avatar';
 import { Button } from '@components/Button';
 import { Form } from '@components/Form';
 import { FileUploader } from '@components/FileUploader';
+import { Loader } from '@components/Loader';
 
 import defaultAvatarIcon from '@assets/images/user-circle.png';
 
@@ -77,8 +78,8 @@ export function ProfileSettings() {
     }
   };
 
-  if (isLoading || !isAuthenticated || !user) {
-    return null;
+  if (isLoading && !isAuthenticated) {
+    return <Loader />;
   }
 
   return (
@@ -139,7 +140,8 @@ export function ProfileSettings() {
         <Button
           type="submit"
           className="mt-2"
-          disabled={!isDirty || !isValid}
+          disabled={!isDirty || !isValid || isLoading}
+          loading={isLoading}
         >
           Update
         </Button>
