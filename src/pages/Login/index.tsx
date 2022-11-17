@@ -28,7 +28,7 @@ export function Login() {
   const { isAuthenticated, isLoading, handleLogin } = useAuth();
 
   const {
-    register, handleSubmit, formState: { errors, isValid },
+    register, handleSubmit, formState: { errors, isValid, isSubmitting },
   } = useForm<LoginSchema>({
     mode: 'all',
     resolver: yupResolver(loginSchema),
@@ -65,7 +65,7 @@ export function Login() {
     setShowPassword((prevState) => !prevState);
   }, []);
 
-  if (isLoading || isAuthenticated) {
+  if ((isLoading || isAuthenticated) && !isSubmitting) {
     return null;
   }
 

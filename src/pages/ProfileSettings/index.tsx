@@ -28,7 +28,7 @@ export function ProfileSettings() {
   usePageTitle('Auth | Profile');
 
   const {
-    isLoading, isAuthenticated, user, handleUpdateInfo,
+    isLoading, isAuthenticated, user, handleUpdateInfo, handleLogout,
   } = useAuth();
 
   const {
@@ -84,6 +84,18 @@ export function ProfileSettings() {
 
   return (
     <main className="h-full flex flex-col items-center justify-center bg-blue-100 font-poppins">
+      <button
+        type="button"
+        className="
+          absolute top-5 right-5 bg-white py-2 px-3 rounded-lg shadow-md
+          font-poppins text-base font-semibold text-gray-500 border-2 border-gray-500
+          hover:bg-gray-600 hover:border-gray-600 hover:text-white transition-colors
+        "
+        onClick={handleLogout}
+      >
+        Sign Out
+      </button>
+
       <Form.Root
         onSubmit={handleSubmit(onSubmit)}
         className="pt-[58px] sm:pt-[78px] relative"
