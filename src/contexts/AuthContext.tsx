@@ -1,9 +1,7 @@
 import {
-  createContext, ReactNode, useCallback, useMemo, useState,
-  useEffect,
+  createContext, ReactNode, useCallback, useMemo, useState, useEffect,
 } from 'react';
 import cookies from 'js-cookie';
-import axios from 'axios';
 
 import UsersService, {
   User, UserCreation, UserCredential, UserInfo,
@@ -42,10 +40,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         const { user: userData } = await UsersService.getByToken(token);
 
         setUser(userData);
-      } catch (err) {
-        if (err instanceof axios.AxiosError) {
-          console.error(err.message);
-        }
       } finally {
         setIsLoading(false);
       }
@@ -61,7 +55,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       const domain = window.location.host;
       cookies.set('authentication.token', token, { domain });
       setUser(userLogged);
-    } catch {} finally {
+    } finally {
       setIsLoading(false);
     }
   }, []);
@@ -73,12 +67,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
       cookies.set('authentication.token', token);
       setUser(userLogged);
-    } catch {} finally {
+    } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(async () => {
     cookies.remove('authentication.token');
     setUser(null);
   }, []);
@@ -93,7 +87,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       const { user: updatedUser } = await UsersService.updateInfo(token, newInfo);
 
       setUser(updatedUser);
-    } catch {} finally {
+    } finally {
       setIsLoading(false);
     }
   }, []);
