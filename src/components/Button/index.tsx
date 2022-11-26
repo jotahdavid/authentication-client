@@ -1,8 +1,7 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
+import cs from 'classnames';
 
 import { Spinner } from '@components/Loader/Spinner';
-
-import safeString from '@utils/safeString';
 
 type ButtonSizes = 'xs' | 'md';
 
@@ -23,11 +22,13 @@ export function Button({
   return (
     <button
       type={type === 'submit' ? 'submit' : 'button'}
-      className={`
-        w-full font-semibold bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-500
-        transition-colors ${buttonSizes[size]} relative
-        ${safeString(className)}
-      `}
+      className={cs(
+        'w-full relative',
+        'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-500 transition-colors',
+        'font-semibold text-white',
+        buttonSizes[size],
+        className,
+      )}
       {...props}
     >
       {children}

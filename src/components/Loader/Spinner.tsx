@@ -1,3 +1,5 @@
+import cs from 'classnames';
+
 interface SpinnerProps {
   size?: 'xs' | 'sm' | 'md' | 'lg';
 }
@@ -9,13 +11,14 @@ const spinnerVariants = {
   lg: 'w-20 h-20 border-[10px]',
 };
 
-export function Spinner({ size }: SpinnerProps) {
+export function Spinner({ size = 'sm' }: SpinnerProps) {
   return (
     <div
-      className={`
-        animate-spin inline-block ${spinnerVariants[size!]}
-        border-t-blue-700 border-r-blue-700 rounded-full
-      `}
+      className={cs(
+        'animate-spin inline-block',
+        'border-t-blue-700 border-r-blue-700 rounded-full',
+        spinnerVariants[size],
+      )}
       role="status"
     >
       <span className="hidden">Loading...</span>

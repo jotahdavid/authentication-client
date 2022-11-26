@@ -1,3 +1,5 @@
+import cs from 'classnames';
+
 type AvatarSizes = 'sm' | 'md' | 'lg' | 'xl';
 
 interface AvatarProps {
@@ -15,7 +17,7 @@ const sizes: Record<AvatarSizes, string> = {
 
 export function Avatar({ src, alt, size = 'md' }: AvatarProps) {
   return (
-    <picture className={`block rounded-full overflow-hidden  ${sizes[size]}`}>
+    <picture className={cs('block rounded-full overflow-hidden', sizes[size])}>
       <img
         src={src}
         alt={alt}
