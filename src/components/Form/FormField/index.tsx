@@ -2,6 +2,7 @@ import {
   forwardRef, HTMLInputTypeAttribute, ReactNode, useId,
 } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
+import cs from 'classnames';
 
 type RegisterProps = Partial<Omit<UseFormRegisterReturn, 'ref'>>;
 
@@ -23,22 +24,33 @@ export const FormField = forwardRef<null, FormFieldProps>((
 ) => {
   const id = useId();
 
+  const iconColors = {
+    'text-red-500': error,
+    'text-blue-500': !error,
+    'text-gray-500': disabled,
+  };
+
   return (
     <fieldset className="mb-6 last:mb-0">
       <label
         htmlFor={id}
-        className={`font-medium text-base ${error ? 'text-red-600' : 'text-blue-900'}`}
+        className={cs(
+          'font-medium text-base',
+          {
+            'text-red-600': error,
+            'text-blue-900': !error,
+          },
+        )}
       >
         {label}
 
         <div className="mt-[2px] relative">
           {leftIcon && (
             <div
-              className={`
-                absolute top-1/2 left-3 -translate-y-1/2 text-opacity-80
-                ${error ? 'text-red-500' : 'text-blue-500'}
-                ${disabled && 'text-gray-500'}
-              `}
+              className={cs(
+                'absolute top-1/2 left-3 -translate-y-1/2 text-opacity-80',
+                iconColors,
+              )}
             >
               {leftIcon}
             </div>
@@ -47,13 +59,18 @@ export const FormField = forwardRef<null, FormFieldProps>((
           <input
             ref={ref}
             id={id}
-            className={`
-              ${leftIcon ? 'pl-8' : 'pl-2'} ${rightIcon ? 'pr-8' : 'pr-2'}
-              w-full font-medium placeholder:font-normal text-black border-2 rounded-lg py-2
-              text-sm placeholder:text-black placeholder:text-opacity-50
-              focus:outline-none focus:border-blue-600 transition-colors disabled:bg-gray-200
-              ${error && 'border-red-200 focus:border-red-500'}
-            `}
+            className={cs(
+              'w-full border-2 rounded-lg py-2 font-medium placeholder:font-normal',
+              'text-sm text-black placeholder:text-black placeholder:text-opacity-50',
+              'focus:outline-none focus:border-blue-600 disabled:bg-gray-200 transition-colors',
+              {
+                'border-red-200 focus:border-red-500': error,
+                'pl-8': leftIcon,
+                'pl-2': !leftIcon,
+                'pr-8': rightIcon,
+                'pr-2': !rightIcon,
+              },
+            )}
             type={inputType}
             placeholder={placeholder}
             disabled={disabled}
@@ -62,11 +79,10 @@ export const FormField = forwardRef<null, FormFieldProps>((
 
           {rightIcon && (
             <div
-              className={`
-                absolute top-1/2 right-3 -translate-y-1/2 text-opacity-80
-                ${error ? 'text-red-500' : 'text-blue-500'}
-                ${disabled && 'text-gray-500'}
-              `}
+              className={cs(
+                'absolute top-1/2 right-3 -translate-y-1/2 text-opacity-80',
+                iconColors,
+              )}
             >
               {rightIcon}
             </div>
