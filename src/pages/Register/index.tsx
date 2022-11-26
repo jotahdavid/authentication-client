@@ -19,7 +19,7 @@ import illustrationImg from '@assets/images/illustration-register.png';
 const registerSchema = yup.object({
   name: yup.string().required().label('Name'),
   email: yup.string().email('Email format is invalid').required().label('Email'),
-  password: yup.string().required().label('Password'),
+  password: yup.string().min(8).required().label('Password'),
   retypePassword: yup.string().equals<string>(
     [yup.ref<string>('password')],
     'Re-type password must be equals password',

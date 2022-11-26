@@ -17,7 +17,7 @@ import illustrationImg from '@assets/images/illustration-login.png';
 
 const loginSchema = yup.object({
   email: yup.string().email('Email format is invalid').required().label('Email'),
-  password: yup.string().required().label('Password'),
+  password: yup.string().min(8).required().label('Password'),
 }).required();
 
 type LoginSchema = yup.InferType<typeof loginSchema>;
