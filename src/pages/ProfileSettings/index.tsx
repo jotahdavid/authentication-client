@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
+import cs from 'classnames';
 
 import { usePageTitle } from '@hooks/usePageTitle';
 import { useAuth } from '@hooks/useAuth';
@@ -86,11 +87,11 @@ export function ProfileSettings() {
     <main className="h-full flex flex-col items-center justify-center bg-blue-100 font-poppins">
       <button
         type="button"
-        className="
-          absolute top-5 right-5 bg-white py-2 px-3 rounded-lg shadow-md
-          font-poppins text-base font-semibold text-gray-500 border-2 border-gray-500
-          hover:bg-gray-600 hover:border-gray-600 hover:text-white transition-colors
-        "
+        className={cs(
+          'absolute top-5 right-5 py-2 px-3 rounded-lg bg-white border-2 border-gray-500',
+          'font-poppins font-semibold text-base text-gray-500 shadow-md',
+          'hover:bg-gray-600 hover:border-gray-600 hover:text-white transition-colors',
+        )}
         onClick={handleLogout}
       >
         Sign Out
@@ -101,13 +102,18 @@ export function ProfileSettings() {
         className="pt-[58px] sm:pt-[78px] relative"
       >
         <div
-          className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full"
+          className={cs(
+            'absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2',
+            'bg-white rounded-full',
+          )}
         >
           <Avatar src={imageUrl} size="lg" />
 
           <FileUploader onFileChange={handleFileChange}>
             <div className="w-12 absolute bottom-[10px] -left-[10px]">
-              <Button className="ring-blue-800 ring-2" size="xs">Edit</Button>
+              <Button className="ring-blue-800 ring-2" size="xs">
+                Edit
+              </Button>
             </div>
           </FileUploader>
         </div>
@@ -139,9 +145,9 @@ export function ProfileSettings() {
           <div className="w-full flex justify-end mt-1">
             <Link
               to="/profile/password"
-              className="
-                text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors
-              "
+              className={cs(
+                'text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors',
+              )}
             >
               Change password&nbsp;
               <i className="fa-solid fa-arrow-up-right-from-square" />

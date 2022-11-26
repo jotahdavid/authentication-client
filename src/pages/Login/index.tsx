@@ -1,9 +1,10 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import axios from 'axios';
+import cs from 'classnames';
 
 import { UserCredential } from '@services/UsersService';
 import { usePageTitle } from '@hooks/usePageTitle';
@@ -73,14 +74,10 @@ export function Login() {
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
       <main className="flex flex-col items-center justify-center bg-blue-100 font-poppins">
         <Form.Root onSubmit={handleSubmit(onSubmit)}>
-          <h2
-            className="font-semibold text-3xl text-blue-900 text-center mb-2"
-          >
+          <h2 className="font-semibold text-3xl text-blue-900 text-center mb-2">
             Welcome back!
           </h2>
-          <p
-            className="font-medium text-base text-black text-opacity-50 text-center mb-8"
-          >
+          <p className="font-medium text-base text-black text-opacity-50 text-center mb-8">
             Enter your credentials to acess your account.
           </p>
 
@@ -122,28 +119,24 @@ export function Login() {
               Remember me
             </label>
 
-            <InvalidLink
-              className="text-blue-600 hover:text-blue-800"
-            >
+            <InvalidLink className="text-blue-600 hover:text-blue-800">
               Forgot password?
             </InvalidLink>
           </div>
 
           <button
             type="submit"
-            className="
-              w-full font-semibold text-lg py-3 bg-blue-600 hover:bg-blue-700 transition-colors
-              text-white rounded-lg shadow-md disabled:bg-gray-500
-            "
+            className={cs(
+              'w-full rounded-lg shadow-md py-3 font-semibold text-lg text-white',
+              'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-500 transition-colors',
+            )}
             disabled={!isValid}
           >
             Sign In
           </button>
         </Form.Root>
 
-        <p
-          className="text-sm text-black text-opacity-80"
-        >
+        <p className="text-sm text-black text-opacity-80">
           Don&apos;t have an account?&nbsp;
           <Link
             to="/register"
@@ -154,9 +147,7 @@ export function Login() {
           </Link>
         </p>
       </main>
-      <section
-        className="hidden bg-blue-600 md:flex items-center justify-center"
-      >
+      <section className="hidden bg-blue-600 md:flex items-center justify-center">
         <img
           src={illustrationImg}
           alt="Illustration"
