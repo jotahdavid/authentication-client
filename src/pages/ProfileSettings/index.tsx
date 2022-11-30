@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
@@ -66,18 +67,21 @@ export function ProfileSettings() {
   const onSubmit: SubmitHandler<EditSchema> = async (data) => {
     if (!isDirty) return;
 
-    try {
-      const newInfo: UserInfo = {
-        email: data.email,
-        name: data.name,
-      };
+    const newInfo: UserInfo = {
+      email: data.email,
+      name: data.name,
+    };
 
-      await handleUpdateInfo(newInfo);
-    } catch (err) {
-      if (err instanceof axios.AxiosError) {
-        alert(err.response?.data.error ?? 'Something went wrong!');
-      }
-    }
+    toast.promise(handleUpdateInfo(newInfo), {
+      loading: 'Updating...',
+      success: 'Account updated successfully!',
+      error: (err) => {
+        if (err instanceof axios.AxiosError && err.response?.data?.error) {
+          return err.response.data.error;
+        }
+        return 'Something went wrong!';
+      },
+    });
   };
 
   if (isLoading && !isAuthenticated) {
