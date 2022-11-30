@@ -15,6 +15,7 @@ import { Button } from '@components/Button';
 import { Form } from '@components/Form';
 import { FileUploader } from '@components/FileUploader';
 import { Loader } from '@components/Loader';
+import { Toaster } from '@components/Toaster';
 
 import defaultAvatarIcon from '@assets/images/user-circle.png';
 
@@ -85,6 +86,8 @@ export function ProfileSettings() {
 
   return (
     <main className="h-full flex flex-col items-center justify-center bg-blue-100 font-poppins">
+      <Toaster />
+
       <button
         type="button"
         className={cs(

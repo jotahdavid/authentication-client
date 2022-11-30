@@ -12,7 +12,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   handleRegister: (newUser: UserCreation) => Promise<void>;
-  handleLogin: (credential: UserCredential) => Promise<void>;
+  handleLogin: (credential: UserCredential) => Promise<User>;
   handleLogout: () => void;
   handleUpdateInfo: (newInfo: UserInfo) => Promise<void>;
 }
@@ -67,6 +67,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
       cookies.set('authentication.token', token);
       setUser(userLogged);
+
+      return userLogged;
     } finally {
       setIsLoading(false);
     }

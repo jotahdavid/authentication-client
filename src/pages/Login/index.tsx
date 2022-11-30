@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
@@ -13,6 +14,7 @@ import { useAuth } from '@hooks/useAuth';
 import { Form } from '@components/Form';
 import { InvalidLink } from '@components/InvalidLink';
 import { PasswordVisibility } from '@components/PasswordVisibility';
+import { Toaster } from '@components/Toaster';
 
 import illustrationImg from '@assets/images/illustration-login.png';
 
@@ -22,6 +24,15 @@ const loginSchema = yup.object({
 }).required();
 
 type LoginSchema = yup.InferType<typeof loginSchema>;
+
+function WelcomeMessage({ name }: { name: string }) {
+  return (
+    <p>
+      Welcome back
+      <strong>{` ${name}`}</strong>
+    </p>
+  );
+}
 
 export function Login() {
   usePageTitle('Auth | Login');
@@ -39,6 +50,8 @@ export function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => toast.remove, []);
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/profile');
@@ -52,12 +65,14 @@ export function Login() {
         password: data.password,
       };
 
-      await handleLogin(userCredential);
+      toast.loading('Authenticating...', { id: 'auth' });
 
-      navigate('/profile');
+      const user = await handleLogin(userCredential);
+
+      toast.success(<WelcomeMessage name={user.name} />, { duration: 3000, id: 'auth' });
     } catch (err) {
       if (err instanceof axios.AxiosError) {
-        alert(err.response?.data.error ?? 'Something went wrong!');
+        toast.error(err.response?.data.error ?? 'Something went wrong!', { id: 'auth' });
       }
     }
   };
@@ -72,6 +87,8 @@ export function Login() {
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
+      <Toaster />
+
       <main className="flex flex-col items-center justify-center bg-blue-100 font-poppins">
         <Form.Root onSubmit={handleSubmit(onSubmit)}>
           <h2 className="font-semibold text-3xl text-blue-900 text-center mb-2">
