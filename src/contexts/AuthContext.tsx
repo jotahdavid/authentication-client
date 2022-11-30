@@ -40,6 +40,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         const { user: userData } = await UsersService.getByToken(token);
 
         setUser(userData);
+      } catch {
+        cookies.remove('authentication.token');
       } finally {
         setIsLoading(false);
       }
