@@ -89,7 +89,7 @@ export function ProfileSettings() {
   }
 
   return (
-    <main className="h-full flex flex-col items-center justify-center bg-blue-100 font-poppins">
+    <main className="h-full flex flex-col items-center pt-16 pb-4 overflow-y-auto bg-blue-100 font-poppins">
       <Toaster />
 
       <button
@@ -106,7 +106,7 @@ export function ProfileSettings() {
 
       <Form.Root
         onSubmit={handleSubmit(onSubmit)}
-        className="pt-[58px] sm:pt-[78px] relative"
+        className="pt-[58px] sm:pt-[78px] relative my-auto"
       >
         <div
           className={cs(
