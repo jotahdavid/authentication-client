@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
@@ -14,6 +15,7 @@ import safeString from '@utils/safeString';
 
 import { Form } from '@components/Form';
 import { PasswordVisibility } from '@components/PasswordVisibility';
+import { Toaster } from '@components/Toaster';
 
 import illustrationImg from '@assets/images/illustration-register.png';
 
@@ -60,10 +62,14 @@ export function Register() {
         password: data.password,
       };
 
+      toast.loading('Loading...', { id: 'register' });
+
       await handleRegister(newUser);
+
+      toast.success('Successfully registered', { duration: 3000, id: 'register' });
     } catch (err) {
       if (err instanceof axios.AxiosError) {
-        alert(err.response?.data.error ?? 'Something went wrong!');
+        toast.error(err.response?.data.error ?? 'Something went wrong!', { id: 'register' });
       }
     }
   };
@@ -84,6 +90,8 @@ export function Register() {
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
+      <Toaster />
+
       <main className="flex flex-col items-center justify-center bg-blue-100 font-poppins">
         <Form.Root onSubmit={handleSubmit(onSubmit)}>
           <h2 className="font-semibold text-3xl text-blue-900 text-center mb-11">
