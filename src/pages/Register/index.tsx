@@ -16,6 +16,7 @@ import safeString from '@utils/safeString';
 import { Form } from '@components/Form';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 import { Toaster } from '@components/Toaster';
+import { Loader } from '@components/Loader';
 
 import illustrationImg from '@assets/images/illustration-register.png';
 
@@ -34,10 +35,10 @@ type RegisterSchema = yup.InferType<typeof registerSchema>;
 export function Register() {
   usePageTitle('Auth | Register');
 
-  const { isAuthenticated, handleRegister } = useAuth();
+  const { isLoading, isAuthenticated, handleRegister } = useAuth();
 
   const {
-    register, handleSubmit, trigger, watch, formState: { errors, isValid },
+    register, handleSubmit, trigger, watch, formState: { errors, isValid, isSubmitting },
   } = useForm<RegisterSchema>({
     mode: 'all',
     resolver: yupResolver(registerSchema),
@@ -86,6 +87,10 @@ export function Register() {
     if (watch('retypePassword')) {
       trigger('retypePassword');
     }
+  }
+
+  if ((isLoading || isAuthenticated) && !isSubmitting) {
+    return <Loader />;
   }
 
   return (

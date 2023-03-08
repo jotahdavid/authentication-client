@@ -15,6 +15,7 @@ import { Form } from '@components/Form';
 import { InvalidLink } from '@components/InvalidLink';
 import { PasswordVisibility } from '@components/PasswordVisibility';
 import { Toaster } from '@components/Toaster';
+import { Loader } from '@components/Loader';
 
 import illustrationImg from '@assets/images/illustration-login.png';
 
@@ -82,7 +83,7 @@ export function Login() {
   }, []);
 
   if ((isLoading || isAuthenticated) && !isSubmitting) {
-    return null;
+    return <Loader />;
   }
 
   return (
