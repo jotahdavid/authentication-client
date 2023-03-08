@@ -97,7 +97,7 @@ export function Register() {
     <section className="grid grid-cols-1 md:grid-cols-2 h-full">
       <Toaster />
 
-      <main className="flex flex-col items-center justify-center bg-blue-100 font-poppins">
+      <main className="flex flex-col items-center justify-center bg-blue-100 font-poppins py-4">
         <Form.Root onSubmit={handleSubmit(onSubmit)}>
           <h2 className="font-semibold text-3xl text-blue-900 text-center mb-11">
             Create new account
@@ -163,7 +163,7 @@ export function Register() {
           </button>
         </Form.Root>
 
-        <p className="text-sm text-black text-opacity-80">
+        <p className="text-sm text-black text-opacity-80 mt-2">
           Already have an account?&nbsp;
           <Link
             to="/login"
