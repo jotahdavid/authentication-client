@@ -2,6 +2,7 @@ import {
   createContext, ReactNode, useCallback, useMemo, useState, useEffect,
 } from 'react';
 import cookies from 'js-cookie';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
 
 import UsersService, {
   User, UserCreation, UserCredential, UserInfo,
@@ -41,7 +42,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
         setUser(userData);
       } catch {
-        cookies.remove('authentication.token');
+        cookies.remove('authentication.token', { path: '/' });
       } finally {
         setIsLoading(false);
       }
@@ -53,9 +54,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setIsLoading(true);
 
       const { user: userLogged, token } = await UsersService.createUser(newUser);
+      const decodedToken = jwtDecode<JwtPayload>(token);
 
-      const domain = window.location.host;
-      cookies.set('authentication.token', token, { domain });
+      if (decodedToken.exp) {
+        cookies.set('authentication.token', token, {
+          sameSite: 'Strict',
+          path: '/',
+          expires: new Date(decodedToken.exp * 1000),
+        });
+      }
       setUser(userLogged);
     } finally {
       setIsLoading(false);
@@ -66,8 +73,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       setIsLoading(true);
       const { user: userLogged, token } = await UsersService.login(userCredential);
+      const decodedToken = jwtDecode<JwtPayload>(token);
 
-      cookies.set('authentication.token', token);
+      if (decodedToken.exp) {
+        cookies.set('authentication.token', token, {
+          sameSite: 'Strict',
+          path: '/',
+          expires: new Date(decodedToken.exp * 1000),
+        });
+      }
       setUser(userLogged);
 
       return userLogged;
